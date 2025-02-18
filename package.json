@@ -20,10 +20,10 @@
   "homepage": "https://github.com/thakurrachitsingh/chat-app-backend-using-websockets#readme",
   "dependencies": {
     "express": "^4.21.2",
+    "mongoose": "^8.10.0",
     "nodemon": "^3.1.9",
     "websocket": "^1.0.35",
     "ws": "^8.18.0"
   },
-  "devDependencies": {},
   "keywords": []
 }
