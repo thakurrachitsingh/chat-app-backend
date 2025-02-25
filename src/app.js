@@ -119,7 +119,7 @@ wss.on('connection', (ws, req) => {
     roomList.rooms.map(function(room){
         if(room.roomId==message.user.roomId){
             room.users.forEach(user=>{
-                user.userWebSocketId.send(message.message);
+                user.userWebSocketId.send(JSON.stringify(message));
             })
         }
     })
