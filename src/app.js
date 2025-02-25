@@ -61,7 +61,7 @@ const roomList = {
                         room.users.map(function(user){
                             if(user.userName==userName){
                                 userExistance = true;
-                                user.ws = ws;
+                                user.userWebSocketId = ws;
                             }
                         })
                         if(!userExistance){
@@ -102,7 +102,9 @@ wss.on('connection', (ws, req) => {
     ws.on("message", function(msg) {       // what to do on message event
         const message = JSON.parse(msg);
         activateUser(message, ws)
-        chatRoom(message, ws)
+        if(message.message!==""){
+            chatRoom(message, ws)
+        }
         // wss.clients.forEach(function each(client) {
         //     if (client.readyState === WebSocket.OPEN) { 
         //       const message = JSON.parse(msg); 
@@ -111,7 +113,7 @@ wss.on('connection', (ws, req) => {
         // })
     })
     ws.on("close", function(){
-        deactivateUser(ws)
+        deactivateUser(ws);
     })
   });
 
