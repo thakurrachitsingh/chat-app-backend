@@ -125,7 +125,7 @@ wss.on('connection', (ws, req) => {
                 if(user.userWebSocketId.readyState === WebSocket.OPEN){
                     user.userWebSocketId.send(JSON.stringify(message));
                 }else{
-                    updateOfflineUsersData(message);
+                    updateOfflineUsersData(message, user);
                 }
             })
         }
@@ -153,13 +153,13 @@ wss.on('connection', (ws, req) => {
     return us;
   }
 
-  async function updateOfflineUsersData(message){
+  async function updateOfflineUsersData(message, user){
     // const AbortController = globalThis.AbortController || await import('abort-controller')
     // const controller = new AbortController();
     // const timeout = setTimeout(() => {
 	//     controller.abort();
     // }, 15000);
-    const absUrl = `/user/${message.user.name}/${message.user.roomId}/updateReadUnreadMessages?unrecieved=1&unread=1`
+    const absUrl = `/user/${user.userName}/${message.user.roomId}/updateReadUnreadMessages?unrecieved=1&unread=1`
     const response = await fetch("https://chat-app-backend-db.vercel.app" + absUrl, { method: 'POST' });
     // const data = response.json();
     console.log(response);
