@@ -2,6 +2,7 @@ const WebSocket = require("ws");
 const express = require("express");
 const app = express()
 const path = require("path")
+const fetch = require('node-fetch');
 
 // app.use("/",express.static(path.resolve(__dirname, "../client")))
 // app.use("/",express.static(path.resolve(__dirname, "../client")))
@@ -121,7 +122,11 @@ wss.on('connection', (ws, req) => {
     roomList.rooms.map(function(room){
         if(room.roomId==message.user.roomId){
             room.users.forEach(user=>{
-                user.userWebSocketId.send(JSON.stringify(message));
+                if(user.userWebSocketId.readyState === WebSocket.OPEN){
+                    user.userWebSocketId.send(JSON.stringify(message));
+                }else{
+                    updateOfflineUsersData(message);
+                }
             })
         }
     })
@@ -148,11 +153,17 @@ wss.on('connection', (ws, req) => {
     return us;
   }
 
-//   function addUserTORoom(message, ws){
-//     const userId = ws;
-//     const username = message.user.userName;
-//     const roomId = message
-//   }
+  async function updateOfflineUsersData(message){
+    // const AbortController = globalThis.AbortController || await import('abort-controller')
+    // const controller = new AbortController();
+    // const timeout = setTimeout(() => {
+	//     controller.abort();
+    // }, 15000);
+    const absUrl = `/user/${message.user.name}/${message.user.roomId}/updateReadUnreadMessages?unrecieved=1&unread=1`
+    const response = await fetch("https://chat-app-backend-db.vercel.app" + absUrl, { method: 'POST' });
+    // const data = response.json();
+    console.log(response);
+  }
 
   function deactivateUser(ws){
     userState.setUsers(
