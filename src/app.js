@@ -149,6 +149,7 @@ wss.on('connection', (ws, req) => {
                 response._id = message._id;
                 response.user = message.user;
                 response.message = message.message;
+                response.time = message.time;
                 response.readReceivedResponse = {"read" : 1, "received" : 1};
                 currentUserSocketId.send(JSON.stringify(response));
             }
