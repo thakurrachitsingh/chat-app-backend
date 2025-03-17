@@ -122,7 +122,7 @@ wss.on('connection', (ws, req) => {
     roomList.rooms.map(function(room){
         if(room.roomId==message.user.roomId){
             var currentUserSocketId;
-            var offlineUserName;
+            var isReceiverOffline = true;
             room.users.forEach(user=>{
                 if(user.userName==message.user.name){
                     currentUserSocketId = user.userWebSocketId;
@@ -131,20 +131,14 @@ wss.on('connection', (ws, req) => {
                     updateOfflineUsersData(message, user, "unread=1");
                     if(user.userName!=message.user.name){
                         user.userWebSocketId.send(JSON.stringify(message));
+                        isReceiverOffline = false;
                     }
                 }else{
-                    offlineUserName = user.userWebSocketId;
-                    // if(user.userName==message.user.name){
-                        // const response = message;
-                        // response.user = message.user.name;
-                        // response.readReceivedResponse.read = 1;
-                        // response.readReceivedResponse.received = 1;
-                        // user.userWebSocketId.send(JSON.stringify(response));
-                    // }
+                    // offlineUserName = user.userWebSocketId;
                     updateOfflineUsersData(message, user, "unrecieved=1&unread=1");
                 }
             })
-            if(offlineUserName!=null && message.readReceivedResponse==null){
+            if(isReceiverOffline==true && message.readReceivedResponse==null){
                 const response = {};
                 response._id = message._id;
                 response.user = message.user;
