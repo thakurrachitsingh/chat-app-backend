@@ -105,6 +105,8 @@ wss.on('connection', (ws, req) => {
         activateUser(message, ws)
         if(message.message!==""){
             chatRoom(message, ws)
+        }else{
+            userIsOnlineReceivedAllChats(message);
         }
         // wss.clients.forEach(function each(client) {
         //     if (client.readyState === WebSocket.OPEN) { 
@@ -117,6 +119,16 @@ wss.on('connection', (ws, req) => {
         deactivateUser(ws);
     })
   });
+
+  function userIsOnlineReceivedAllChats(message){
+    message.user.roomIds.map(function(messageRoomId){
+        roomList.rooms.map(function(storedRoomId, users){
+            if(messageRoomId==storedRoomId){
+                users.userWebSocketId.send(JSON.stringify(message));
+            }
+        });
+    });
+  }
 
   function chatRoom(message, ws){
     roomList.rooms.map(function(room){
