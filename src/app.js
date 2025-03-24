@@ -123,8 +123,12 @@ wss.on('connection', (ws, req) => {
   function userIsOnlineReceivedAllChats(message){
     message.user.roomIds.map(function(messageRoomId){
         roomList.rooms.map(function(storedRoomId, users){
-            if(messageRoomId==storedRoomId){
-                users.userWebSocketId.send(JSON.stringify(message));
+            if(messageRoomId==storedRoomId.roomId){
+                storedRoomId.users.map(function(user){
+                    if(user.userName!=message.user.name){
+                        user.userWebSocketId.send(JSON.stringify(message));
+                    }
+                });
             }
         });
     });
